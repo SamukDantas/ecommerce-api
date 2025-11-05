@@ -572,14 +572,14 @@ Authorization: Bearer {token}
 ### 1. Top 5 Compradores
 ```sql
 SELECT u.id, u.nome, u.email,
-       COUNT(p.id) as totalPedidos,
-       SUM(p.valorTotal) as totalGasto
-FROM Usuario u
-         JOIN Pedido p ON p.usuario.id = u.id
+       COUNT(p.id) as total_pedidos,
+       SUM(p.valor_total) as total_gasto
+FROM usuarios u
+         JOIN pedidos p ON p.usuario_id = u.id
 WHERE p.status = 'PAGO'
-GROUP BY u.id
+GROUP BY u.id, u.nome, u.email
 ORDER BY COUNT(p.id) DESC
-    LIMIT 5
+    LIMIT 5;
 ```
 
 **Otimizações:**
@@ -591,12 +591,12 @@ ORDER BY COUNT(p.id) DESC
 ```sql
 SELECT u.id, u.nome, u.email,
        COUNT(p.id) as totalPedidos,
-       AVG(p.valorTotal) as ticketMedio
-FROM Usuario u
-         JOIN Pedido p ON p.usuario.id = u.id
+       AVG(p.valor_total) as ticketMedio
+FROM usuarios u
+         JOIN pedidos p ON p.usuario_id = u.id
 WHERE p.status = 'PAGO'
 GROUP BY u.id
-ORDER BY AVG(p.valorTotal) DESC
+ORDER BY AVG(p.valor_total) DESC
 ```
 
 **Otimizações:**
@@ -605,11 +605,13 @@ ORDER BY AVG(p.valorTotal) DESC
 
 ### 3. Faturamento Mensal
 ```sql
-SELECT COALESCE(SUM(p.valorTotal), 0)
-FROM Pedido p
-WHERE p.status = 'PAGO'
-AND YEAR(p.pagoEm) = :ano
-AND MONTH(p.pagoEm) = :mes
+SELECT
+    COALESCE(SUM(valor_total), 0) as faturamento_mes,
+    COUNT(*) as total_pedidos
+FROM pedidos
+WHERE status = 'PAGO'
+    AND YEAR(pago_em) = YEAR(CURRENT_DATE)
+    AND MONTH(pago_em) = MONTH(CURRENT_DATE);
 ```
 
 **Otimizações:**
@@ -619,10 +621,26 @@ AND MONTH(p.pagoEm) = :mes
 
 ### 4. Evitando N+1 com FETCH JOIN
 ```sql
-SELECT DISTINCT p FROM Pedido p
-LEFT JOIN FETCH p.itens i
-LEFT JOIN FETCH i.produto
-WHERE p.usuario.id = :usuarioId
+SELECT DISTINCT
+    p.id as pedido_id,
+    p.usuario_id,
+    p.status,
+    p.valor_total,
+    p.criado_em,
+    p.atualizado_em,
+    p.pago_em,
+    i.id as item_id,
+    i.quantidade,
+    i.preco_unitario,
+    pr.id as produto_id,
+    pr.nome as produto_nome,
+    pr.preco as produto_preco,
+    pr.categoria as produto_categoria
+FROM pedidos p
+         LEFT JOIN itens_pedido i ON p.id = i.pedido_id
+         LEFT JOIN produtos pr ON i.produto_id = pr.id
+WHERE p.usuario_id = (SELECT id FROM usuarios LIMIT 1)
+ORDER BY p.criado_em DESC;
 ```
 
 **Otimizações:**
