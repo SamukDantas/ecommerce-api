@@ -590,8 +590,8 @@ ORDER BY COUNT(p.id) DESC
 ### 2. Ticket Médio
 ```sql
 SELECT u.id, u.nome, u.email,
-       COUNT(p.id) as totalPedidos,
-       AVG(p.valor_total) as ticketMedio
+       COUNT(p.id) as total_pedidos,
+       AVG(p.valor_total) as ticket_medio
 FROM usuarios u
          JOIN pedidos p ON p.usuario_id = u.id
 WHERE p.status = 'PAGO'
