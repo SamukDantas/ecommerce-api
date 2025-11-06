@@ -306,26 +306,26 @@ docker exec -it ecommerce-api-db-1 mysql -uroot -proot ecommerce
 SHOW TABLES;
 
 -- Ver estrutura de uma tabela
-DESCRIBE users;
-DESCRIBE products;
-DESCRIBE orders;
-DESCRIBE order_items;
+DESCRIBE usuarios;
+DESCRIBE produtos;
+DESCRIBE pedidos;
+DESCRIBE itens_pedido;
 
 -- Ver todos os usuários
-SELECT * FROM users;
+SELECT * FROM usuarios;
 
 -- Ver todos os produtos
-SELECT * FROM products;
+SELECT * FROM produtos;
 
 -- Ver todos os pedidos com itens
-SELECT o.id, o.status, o.total_value, u.name as user_name
-FROM orders o
-JOIN users u ON o.user_id = u.id;
+SELECT p.id, p.status, p.valor_total, u.nome as nome_usuario
+FROM pedidos p
+JOIN usuarios u ON o.usuario_id = u.id;
 
 -- Ver produtos mais vendidos
-SELECT p.nome, SUM(oi.quantity) as total_vendido
-FROM products p
-JOIN order_items oi ON p.id = oi.product_id
+SELECT p.nome, SUM(ip.quantidade) as total_vendido
+FROM produtos p
+JOIN itens_pedido ip ON p.id = ip.produto_id
 GROUP BY p.id, p.nome
 ORDER BY total_vendido DESC;
 
@@ -578,8 +578,8 @@ FROM usuarios u
          JOIN pedidos p ON p.usuario_id = u.id
 WHERE p.status = 'PAGO'
 GROUP BY u.id, u.nome, u.email
-ORDER BY COUNT(p.id) DESC
-    LIMIT 5;
+ORDER BY total_gasto DESC
+    LIMIT 5
 ```
 
 **Otimizações:**
