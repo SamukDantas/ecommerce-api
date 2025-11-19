@@ -1,4 +1,4 @@
-package com.ecommerce.api.entidade;
+package com.ecommerce.api.entity;
 
 import com.ecommerce.api.enums.Papel;
 import jakarta.persistence.*;

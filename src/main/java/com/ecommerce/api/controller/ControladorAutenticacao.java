@@ -1,9 +1,9 @@
-package com.ecommerce.api.controlador;
+package com.ecommerce.api.controller;
 
 import com.ecommerce.api.dto.RespostaAutenticacao;
 import com.ecommerce.api.dto.RequisicaoLogin;
 import com.ecommerce.api.dto.RequisicaoRegistro;
-import com.ecommerce.api.servico.ServicoAutenticacao;
+import com.ecommerce.api.service.ServicoAutenticacao;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

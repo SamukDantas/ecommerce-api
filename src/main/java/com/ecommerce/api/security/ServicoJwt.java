@@ -1,4 +1,4 @@
-package com.ecommerce.api.seguranca;
+package com.ecommerce.api.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

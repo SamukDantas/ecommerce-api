@@ -1,7 +1,7 @@
-package com.ecommerce.api.servico;
+package com.ecommerce.api.service;
 
-import com.ecommerce.api.repositorio.PedidoRepositorio;
-import com.ecommerce.api.repositorio.UsuarioRepositorio;
+import com.ecommerce.api.repository.PedidoRepositorio;
+import com.ecommerce.api.repository.UsuarioRepositorio;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -1,10 +1,10 @@
-package com.ecommerce.api.servico;
+package com.ecommerce.api.service;
 
 import com.ecommerce.api.dto.RequisicaoProduto;
 import com.ecommerce.api.dto.RespostaProduto;
-import com.ecommerce.api.entidade.Produto;
-import com.ecommerce.api.excecao.ExcecaoRecursoNaoEncontrado;
-import com.ecommerce.api.repositorio.ProdutoRepositorio;
+import com.ecommerce.api.entity.Produto;
+import com.ecommerce.api.exception.ExcecaoRecursoNaoEncontrado;
+import com.ecommerce.api.repository.ProdutoRepositorio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

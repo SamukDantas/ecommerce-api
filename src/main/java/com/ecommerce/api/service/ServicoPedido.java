@@ -1,22 +1,21 @@
-package com.ecommerce.api.servico;
+package com.ecommerce.api.service;
 
 import com.ecommerce.api.dto.*;
-import com.ecommerce.api.entidade.ItemPedido;
-import com.ecommerce.api.entidade.Pedido;
-import com.ecommerce.api.entidade.Produto;
-import com.ecommerce.api.entidade.Usuario;
+import com.ecommerce.api.entity.ItemPedido;
+import com.ecommerce.api.entity.Pedido;
+import com.ecommerce.api.entity.Produto;
+import com.ecommerce.api.entity.Usuario;
 import com.ecommerce.api.enums.StatusPedido;
-import com.ecommerce.api.excecao.ExcecaoNegocio;
-import com.ecommerce.api.excecao.ExcecaoEstoqueInsuficiente;
-import com.ecommerce.api.excecao.ExcecaoRecursoNaoEncontrado;
-import com.ecommerce.api.repositorio.PedidoRepositorio;
-import com.ecommerce.api.repositorio.ProdutoRepositorio;
+import com.ecommerce.api.exception.ExcecaoNegocio;
+import com.ecommerce.api.exception.ExcecaoEstoqueInsuficiente;
+import com.ecommerce.api.exception.ExcecaoRecursoNaoEncontrado;
+import com.ecommerce.api.repository.PedidoRepositorio;
+import com.ecommerce.api.repository.ProdutoRepositorio;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

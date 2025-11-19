@@ -1,9 +1,9 @@
-package com.ecommerce.api.controlador;
+package com.ecommerce.api.controller;
 
 import com.ecommerce.api.dto.RequisicaoCriarPedido;
 import com.ecommerce.api.dto.RespostaPedido;
-import com.ecommerce.api.entidade.Usuario;
-import com.ecommerce.api.servico.ServicoPedido;
+import com.ecommerce.api.entity.Usuario;
+import com.ecommerce.api.service.ServicoPedido;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;

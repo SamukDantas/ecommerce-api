@@ -1,6 +1,6 @@
-package com.ecommerce.api.configuracao;
+package com.ecommerce.api.configuration;
 
-import com.ecommerce.api.repositorio.UsuarioRepositorio;
+import com.ecommerce.api.repository.UsuarioRepositorio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

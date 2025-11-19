@@ -1,4 +1,4 @@
-package com.ecommerce.api.excecao;
+package com.ecommerce.api.exception;
 
 public class ExcecaoEstoqueInsuficiente extends RuntimeException {
     public ExcecaoEstoqueInsuficiente(String mensagem) {

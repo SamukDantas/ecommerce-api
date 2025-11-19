@@ -1,6 +1,6 @@
-package com.ecommerce.api.configuracao;
+package com.ecommerce.api.configuration;
 
-import com.ecommerce.api.seguranca.FiltroAutenticacaoJwt;
+import com.ecommerce.api.security.FiltroAutenticacaoJwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

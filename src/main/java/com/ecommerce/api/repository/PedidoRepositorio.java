@@ -1,6 +1,6 @@
-package com.ecommerce.api.repositorio;
+package com.ecommerce.api.repository;
 
-import com.ecommerce.api.entidade.Pedido;
+import com.ecommerce.api.entity.Pedido;
 import com.ecommerce.api.enums.StatusPedido;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

@@ -1,6 +1,6 @@
-package com.ecommerce.api.controlador;
+package com.ecommerce.api.controller;
 
-import com.ecommerce.api.servico.ServicoRelatorio;
+import com.ecommerce.api.service.ServicoRelatorio;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;

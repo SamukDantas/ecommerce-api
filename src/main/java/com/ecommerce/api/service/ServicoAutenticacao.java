@@ -1,11 +1,11 @@
-package com.ecommerce.api.servico;
+package com.ecommerce.api.service;
 
 import com.ecommerce.api.dto.RespostaAutenticacao;
 import com.ecommerce.api.dto.RequisicaoLogin;
 import com.ecommerce.api.dto.RequisicaoRegistro;
-import com.ecommerce.api.entidade.Usuario;
-import com.ecommerce.api.repositorio.UsuarioRepositorio;
-import com.ecommerce.api.seguranca.ServicoJwt;
+import com.ecommerce.api.entity.Usuario;
+import com.ecommerce.api.repository.UsuarioRepositorio;
+import com.ecommerce.api.security.ServicoJwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
