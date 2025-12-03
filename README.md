@@ -9,12 +9,13 @@ Sistema de gerenciamento de pedidos e produtos para e-commerce, desenvolvido com
 - [Arquitetura e Design Patterns](#-arquitetura-e-design-patterns)
 - [Princípios SOLID](#-princípios-solid)
 - [Funcionalidades](#-funcionalidades)
+- [Testes](#-testes)
+- [Análise Estática de Código](#-análise-estática-de-código)
 - [Requisitos](#-requisitos)
 - [Instalação e Execução](#-instalação-e-execução)
 - [Endpoints da API](#-endpoints-da-api)
 - [Regras de Negócio](#-regras-de-negócio)
 - [Queries Otimizadas](#-queries-otimizadas)
-- [Testes](#-testes)
 - [Estrutura do Projeto](#-estrutura-do-projeto)
 
 ## 🎯 Visão Geral
@@ -25,9 +26,12 @@ Este projeto implementa uma API REST completa para um sistema de e-commerce, com
 - **Regras de Negócio**: Gerenciamento inteligente de estoque e pedidos
 - **Performance**: Queries otimizadas com Spring Data JPA
 - **Qualidade**: Código limpo seguindo princípios SOLID e design patterns
+- **Testes**: Cobertura abrangente com testes unitários e de integração
+- **Análise Estática**: Múltiplas ferramentas para garantir qualidade do código
 
 ## 🚀 Tecnologias
 
+### Core
 - **Java 17**
 - **Spring Boot 3.2.0**
   - Spring Web
@@ -40,6 +44,22 @@ Este projeto implementa uma API REST completa para um sistema de e-commerce, com
 - **Springdoc OpenAPI** - Documentação Swagger
 - **Docker & Docker Compose**
 - **Maven**
+
+### Testes
+- **JUnit 5** - Framework de testes moderno
+- **Mockito 5.8.0** - Framework de mocking
+- **AssertJ** - Assertions fluentes e legíveis
+- **TestContainers 1.19.3** - Containers Docker para testes de integração
+- **REST Assured** - Testes de API REST
+- **H2 Database** - Banco em memória para testes
+
+### Análise Estática
+- **Checkstyle 10.12.5** - Verificação de estilo de código
+- **SpotBugs 4.8.3** - Detecção de bugs potenciais
+- **FindSecBugs** - Análise de vulnerabilidades de segurança
+- **PMD 7.0.0** - Análise de código fonte
+- **JaCoCo 0.8.11** - Cobertura de código
+- **SonarQube** - Análise completa de qualidade (preparado)
 
 ## 🏗️ Arquitetura e Design Patterns
 
@@ -238,11 +258,361 @@ Depender de abstrações, não de implementações:
 - ✅ Valor total faturado no mês
 - ✅ Valor faturado por período customizado
 
+## 🧪 Testes
+
+### Visão Geral da Estratégia de Testes
+
+O projeto implementa uma estratégia abrangente de testes seguindo a pirâmide de testes:
+
+```
+        /\
+       /  \      E2E Tests (Futuros)
+      /____\
+     /      \    Integration Tests (TestContainers)
+    /________\   ✅ 19+ testes
+   /          \  Unit Tests (JUnit + Mockito)
+  /____________\ ✅ 24+ testes
+```
+
+### Testes Unitários
+
+**Total: 24+ testes implementados**
+
+Os testes unitários cobrem a camada de serviço com isolamento completo usando mocks:
+
+#### Características:
+- ✅ **Padrão AAA** (Arrange, Act, Assert)
+- ✅ **JUnit 5** - Framework moderno de testes
+- ✅ **Mockito** - Mocking de dependências
+- ✅ **AssertJ** - Assertions fluentes
+- ✅ **Nomenclatura clara** - @DisplayName descritivo
+
+#### Arquivos de Teste:
+- `ServicoProdutoTest.java` - 11 testes unitários
+  - Criação, busca, atualização e exclusão de produtos
+  - Validação de exceções
+  - Casos de borda (listas vazias, produtos inexistentes)
+
+- `ServicoPedidoTest.java` - 13 testes unitários
+  - Criação de pedidos com validação de estoque
+  - Processamento de pagamento
+  - Cancelamento de pedidos
+  - Validação de permissões
+
+#### Exemplo de Teste:
+```java
+@Test
+@DisplayName("Deve criar produto com sucesso")
+void deveCriarProdutoComSucesso() {
+    // Arrange (Given)
+    when(produtoRepositorio.save(any(Produto.class)))
+        .thenReturn(produtoExemplo);
+
+    // Act (When)
+    RespostaProduto resposta = servicoProduto.criarProduto(requisicao);
+
+    // Assert (Then)
+    assertThat(resposta).isNotNull();
+    assertThat(resposta.getNome()).isEqualTo("Notebook Dell");
+    verify(produtoRepositorio, times(1)).save(any(Produto.class));
+}
+```
+
+#### Executar Testes Unitários:
+```bash
+# Executar todos os testes unitários
+mvn test
+
+# Executar teste específico
+mvn test -Dtest=ServicoProdutoTest
+
+# Com relatório de cobertura
+mvn test jacoco:report
+```
+
+### Testes de Integração (TestContainers)
+
+**Total: 19+ testes de integração**
+
+Os testes de integração validam o comportamento completo da aplicação usando containers Docker reais:
+
+#### Características:
+- ✅ **Container MySQL 8.0** - Banco de dados real
+- ✅ **TestContainers** - Gerenciamento automático de containers
+- ✅ **REST Assured** - Testes de API HTTP
+- ✅ **End-to-End** - Testa toda a stack da aplicação
+- ✅ **Isolamento** - Cada teste tem ambiente limpo
+
+#### Arquivos de Teste:
+- `BaseIntegrationTest.java` - Classe base com configuração do container
+- `ProdutoIntegrationTest.java` - 10 testes de integração
+  - CRUD completo de produtos
+  - Validação de autenticação e autorização
+  - Testes de permissões (ADMIN vs USUARIO)
+
+- `PedidoIntegrationTest.java` - 9 testes de integração
+  - Fluxo completo de pedidos
+  - Processamento de pagamento com atualização de estoque
+  - Validações de negócio
+
+#### Por que TestContainers?
+- ✅ Testa com MySQL real (não H2)
+- ✅ Detecta problemas de queries específicas
+- ✅ Ambiente idêntico à produção
+- ✅ Cleanup automático
+
+#### Exemplo de Teste de Integração:
+```java
+@Test
+@DisplayName("Deve criar produto com token de admin")
+void deveCriarProdutoComTokenAdmin() {
+    // Given
+    RequisicaoProduto requisicao = RequisicaoProduto.builder()
+            .nome("Teclado Mecânico")
+            .preco(new BigDecimal("450.00"))
+            .categoria("Periféricos")
+            .quantidadeEstoque(20)
+            .build();
+
+    // When & Then
+    given()
+        .header("Authorization", "Bearer " + tokenAdmin)
+        .contentType(ContentType.JSON)
+        .body(requisicao)
+    .when()
+        .post("/api/produtos")
+    .then()
+        .statusCode(201)
+        .body("nome", equalTo("Teclado Mecânico"))
+        .body("preco", equalTo(450.00f));
+}
+```
+
+#### Executar Testes de Integração:
+```bash
+# IMPORTANTE: Docker deve estar rodando!
+docker --version
+docker ps
+
+# Executar testes de integração
+mvn verify
+
+# Executar todos os testes (unitários + integração)
+mvn clean verify
+
+# Executar teste específico
+mvn verify -Dit.test=ProdutoIntegrationTest
+```
+
+### Cobertura de Código
+
+A cobertura de código é medida pelo **JaCoCo** com meta mínima de **50%**:
+
+```bash
+# Gerar relatório de cobertura
+mvn clean test jacoco:report
+
+# Relatório HTML disponível em:
+# target/site/jacoco/index.html
+```
+
+#### Métricas de Cobertura:
+- ✅ Cobertura de linhas
+- ✅ Cobertura de branches
+- ✅ Cobertura de métodos
+- ✅ Complexidade ciclomática
+
+### Configuração de Testes
+
+Os testes utilizam um arquivo de configuração separado:
+
+**src/test/resources/application-test.properties:**
+```properties
+spring.jpa.hibernate.ddl-auto=create-drop
+spring.test.database.replace=none
+logging.level.org.testcontainers=INFO
+```
+
+## 🔍 Análise Estática de Código
+
+O projeto utiliza **5 ferramentas** de análise estática para garantir qualidade do código:
+
+### 1. Checkstyle
+
+**Objetivo:** Verificar estilo e padrões de código
+
+**Configuração:** `checkstyle.xml`
+
+**Verificações:**
+- ✅ Nomenclatura de classes, métodos e variáveis
+- ✅ Tamanho máximo de métodos (150 linhas)
+- ✅ Número máximo de parâmetros (7)
+- ✅ Complexidade ciclomática (máximo 15)
+- ✅ Importações e espaços em branco
+- ✅ Estrutura de blocos e chaves
+
+**Executar:**
+```bash
+mvn checkstyle:check
+
+# Gerar relatório HTML
+mvn checkstyle:checkstyle
+# Relatório: target/site/checkstyle.html
+```
+
+### 2. SpotBugs
+
+**Objetivo:** Detectar bugs potenciais automaticamente
+
+**Configuração:** Incluído no pom.xml com FindSecBugs
+
+**Tipos de bugs detectados:**
+- ✅ Null pointer dereferences
+- ✅ Resource leaks
+- ✅ Problemas de concorrência
+- ✅ Más práticas de equals/hashCode
+- ✅ Vulnerabilidades de segurança
+
+**Executar:**
+```bash
+mvn spotbugs:check
+
+# Gerar relatório
+mvn spotbugs:spotbugs
+# Relatório: target/spotbugsXml.xml
+```
+
+### 3. PMD
+
+**Objetivo:** Análise de código fonte para problemas comuns
+
+**Configuração:** `pmd-ruleset.xml`
+
+**Categorias de regras:**
+- ✅ Best Practices
+- ✅ Code Style
+- ✅ Design (complexidade, acoplamento)
+- ✅ Error Prone
+- ✅ Performance
+- ✅ Security
+
+**Executar:**
+```bash
+mvn pmd:check
+
+# Gerar relatório HTML
+mvn pmd:pmd
+# Relatório: target/site/pmd.html
+```
+
+### 4. JaCoCo
+
+**Objetivo:** Medir cobertura de testes
+
+**Meta:** Mínimo 50% de cobertura de linhas
+
+**Métricas:**
+- ✅ Cobertura de linhas
+- ✅ Cobertura de branches
+- ✅ Cobertura de métodos
+- ✅ Complexidade ciclomática
+
+**Executar:**
+```bash
+mvn test jacoco:report
+
+# Verificar se atingiu meta
+mvn jacoco:check
+
+# Relatório: target/site/jacoco/index.html
+```
+
+### 5. SonarQube
+
+**Objetivo:** Análise completa de qualidade de código
+
+**Status:** Preparado para integração
+
+**Métricas analisadas:**
+- ✅ Code Smells
+- ✅ Bugs
+- ✅ Vulnerabilidades de segurança
+- ✅ Duplicação de código
+- ✅ Cobertura de testes
+- ✅ Dívida técnica
+
+**Executar:**
+```bash
+# Com SonarQube local
+mvn sonar:sonar \
+  -Dsonar.projectKey=ecommerce-api \
+  -Dsonar.host.url=http://localhost:9000 \
+  -Dsonar.login=seu_token
+```
+
+### Executar Todas as Análises
+
+```bash
+# Pipeline completo: testes + análise estática
+mvn clean verify
+
+# Gerar todos os relatórios
+mvn clean verify site
+
+# Relatórios disponíveis em:
+# - target/site/jacoco/index.html (Cobertura)
+# - target/site/checkstyle.html (Checkstyle)
+# - target/site/pmd.html (PMD)
+# - target/spotbugsXml.xml (SpotBugs)
+```
+
+### Métricas de Qualidade Configuradas
+
+| Métrica | Limite | Ferramenta |
+|---------|--------|------------|
+| Complexidade Ciclomática | 15 | Checkstyle, PMD |
+| Tamanho de Método | 150 linhas | Checkstyle, PMD |
+| Parâmetros por Método | 7 | Checkstyle, PMD |
+| Cobertura de Código | 50% | JaCoCo |
+| Tamanho de Arquivo | 500 linhas | Checkstyle |
+
+### Integração com CI/CD
+
+O projeto está preparado para integração com pipelines CI/CD:
+
+```yaml
+# Exemplo: .github/workflows/ci.yml
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+    
+    - name: Build and Test
+      run: mvn clean verify
+    
+    - name: Run Static Analysis
+      run: mvn checkstyle:check spotbugs:check pmd:check
+    
+    - name: Upload Coverage
+      uses: codecov/codecov-action@v3
+```
+
 ## 📋 Requisitos
 
 - Java 17 ou superior
-- Docker e Docker Compose
-- Maven (opcional, já incluído no Docker)
+- Maven 3.6 ou superior
+- Docker e Docker Compose (para testes de integração e ambiente de desenvolvimento)
 
 ## 🔧 Instalação e Execução
 
@@ -282,13 +652,17 @@ test.bat
 # 1. Certifique-se de ter MySQL rodando localmente
 # Configure as credenciais em application.properties
 
-# 2. Compile e execute
-./mvnw clean install
-./mvnw spring-boot:run
+# 2. Execute os testes
+mvn test                    # Testes unitários
+mvn verify                  # Testes unitários + integração
 
-# Ou usando Maven instalado
+# 3. Compile e execute
 mvn clean install
 mvn spring-boot:run
+
+# Ou usando Maven wrapper
+./mvnw clean install
+./mvnw spring-boot:run
 ```
 
 ### Importar Dump do Banco de Dados
@@ -647,99 +1021,42 @@ ORDER BY p.criado_em DESC;
 - FETCH JOIN carrega relacionamentos em uma única query
 - Elimina problema de N+1 queries
 
-## 🧪 Testes
-
-### Testando com cURL
-
-```bash
-# 1. Registrar um usuário ADMIN
-curl -X POST http://localhost:8080/api/autenticacao/registrar \
-  -H "Content-Type: application/json" \
-  -d '{
-    "nome": "Admin User",
-    "email": "admin@email.com",
-    "senha": "admin123",
-    "papel": "ADMIN"
-  }'
-
-# 2. Fazer login e capturar o token
-TOKEN=$(curl -X POST http://localhost:8080/api/autenticacao/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "admin@email.com",
-    "senha": "admin123"
-  }' | jq -r '.token')
-
-# 3. Criar um produto
-curl -X POST http://localhost:8080/api/produtos \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $TOKEN" \
-  -d '{
-    "nome": "Produto Teste",
-    "descricao": "Descrição do produto",
-    "preco": 99.90,
-    "categoria": "Testes",
-    "quantidadeEstoque": 50
-  }'
-
-# 4. Listar produtos
-curl http://localhost:8080/api/produtos
-
-# 5. Registrar um usuário normal
-curl -X POST http://localhost:8080/api/autenticacao/registrar \
-  -H "Content-Type: application/json" \
-  -d '{
-    "nome": "Cliente Teste",
-    "email": "cliente@email.com",
-    "senha": "cliente123",
-    "papel": "USUARIO"
-  }'
-
-# 6. Login como usuário normal
-USER_TOKEN=$(curl -X POST http://localhost:8080/api/autenticacao/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "cliente@email.com",
-    "senha": "cliente123"
-  }' | jq -r '.token')
-
-# 7. Criar um pedido
-curl -X POST http://localhost:8080/api/pedidos \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $USER_TOKEN" \
-  -d '{
-    "itens": [
-      {
-        "produtoId": "COLE-AQUI-O-UUID-DO-PRODUTO",
-        "quantidade": 2
-      }
-    ]
-  }'
-```
-
 ## 📁 Estrutura do Projeto
 
 ```
-ecommerce-api-pt/
+ecommerce-api/
 ├── src/
 │   ├── main/
 │   │   ├── java/com/ecommerce/api/
-│   │   │   ├── configuracao/        # Configurações (Segurança, Aplicação)
-│   │   │   ├── controlador/         # Controladores REST
+│   │   │   ├── configuration/        # Configurações (Segurança, Aplicação)
+│   │   │   ├── controller/          # Controladores REST
 │   │   │   ├── dto/                 # Data Transfer Objects
-│   │   │   ├── entidade/            # Entidades JPA
+│   │   │   ├── entity/              # Entidades JPA
 │   │   │   ├── enums/               # Enumerações (Papel, StatusPedido)
-│   │   │   ├── excecao/             # Exceções customizadas
-│   │   │   ├── repositorio/         # Repositórios JPA
-│   │   │   ├── seguranca/           # JWT e filtros de segurança
-│   │   │   ├── servico/             # Lógica de negócio
+│   │   │   ├── exception/           # Exceções customizadas
+│   │   │   ├── repository/          # Repositórios JPA
+│   │   │   ├── security/            # JWT e filtros de segurança
+│   │   │   ├── service/             # Lógica de negócio
 │   │   │   └── AplicacaoEcommerceApi.java
 │   │   └── resources/
 │   │       └── application.properties
-│   └── test/                        # Testes unitários e integração
+│   └── test/
+│       ├── java/com/ecommerce/api/
+│       │   ├── service/             # Testes unitários
+│       │   │   ├── ServicoProdutoTest.java
+│       │   │   └── ServicoPedidoTest.java
+│       │   └── integration/         # Testes de integração
+│       │       ├── BaseIntegrationTest.java
+│       │       ├── ProdutoIntegrationTest.java
+│       │       └── PedidoIntegrationTest.java
+│       └── resources/
+│           └── application-test.properties
 ├── Dockerfile                       # Container da aplicação
 ├── docker-compose.yml              # Orquestração de containers
 ├── pom.xml                         # Dependências Maven
+├── checkstyle.xml                  # Configuração Checkstyle
+├── pmd-ruleset.xml                 # Configuração PMD
+├── .gitignore                      # Arquivos ignorados pelo Git
 └── README.md                       # Este arquivo
 ```
 
@@ -751,6 +1068,7 @@ ecommerce-api-pt/
 - **CORS**: Configurável para ambientes específicos
 - **SQL Injection**: Prevenido por PreparedStatements do JPA
 - **XSS**: Validação de entrada com Bean Validation
+- **FindSecBugs**: Análise de vulnerabilidades de segurança
 
 ## 📈 Performance
 
@@ -818,6 +1136,28 @@ docker exec -it ecommerce-mysql mysql -u root -p -e "SHOW PROCESSLIST;"
 }
 ```
 
+## 🚀 Comandos Rápidos
+
+```bash
+# Testes
+mvn test                           # Testes unitários
+mvn verify                         # Testes unitários + integração
+mvn test jacoco:report            # Cobertura de código
+
+# Análise Estática
+mvn checkstyle:check              # Verificar estilo
+mvn spotbugs:check                # Detectar bugs
+mvn pmd:check                     # Análise de código
+
+# Pipeline Completo
+mvn clean verify                  # Testes + análise
+mvn clean verify site             # Testes + análise + relatórios
+
+# Execução
+mvn spring-boot:run               # Executar aplicação
+docker-compose up --build         # Executar com Docker
+```
+
 ## 📝 Notas Importantes
 
 1. **Tokens JWT**: Válidos por 24 horas após o login
@@ -828,6 +1168,7 @@ docker exec -it ecommerce-mysql mysql -u root -p -e "SHOW PROCESSLIST;"
     - USUARIO pode: criar pedidos, visualizar produtos
     - ADMIN pode: tudo que USUARIO pode + gerenciar produtos + acessar relatórios
 6. **Nomenclatura**: Todo o código utiliza termos em português para facilitar o entendimento
+7. **Testes**: Executar `mvn verify` requer Docker rodando para TestContainers
 
 ## 👤 Desenvolvedor
 
@@ -835,3 +1176,5 @@ docker exec -it ecommerce-mysql mysql -u root -p -e "SHOW PROCESSLIST;"
 - Email: samueldantasbarbosa@hotmail.com
 
 ---
+
+**Projeto desenvolvido com foco em qualidade, testes abrangentes e boas práticas de desenvolvimento.**
