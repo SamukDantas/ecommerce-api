@@ -1,8 +1,8 @@
 package com.ecommerce.api.service;
 
-import com.ecommerce.api.dto.RespostaAutenticacao;
 import com.ecommerce.api.dto.RequisicaoLogin;
 import com.ecommerce.api.dto.RequisicaoRegistro;
+import com.ecommerce.api.dto.RespostaAutenticacao;
 import com.ecommerce.api.entity.Usuario;
 import com.ecommerce.api.repository.UsuarioRepositorio;
 import com.ecommerce.api.security.ServicoJwt;

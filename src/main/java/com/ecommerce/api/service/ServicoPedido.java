@@ -1,13 +1,16 @@
 package com.ecommerce.api.service;
 
-import com.ecommerce.api.dto.*;
+import com.ecommerce.api.dto.RequisicaoCriarPedido;
+import com.ecommerce.api.dto.RequisicaoItemPedido;
+import com.ecommerce.api.dto.RespostaItemPedido;
+import com.ecommerce.api.dto.RespostaPedido;
 import com.ecommerce.api.entity.ItemPedido;
 import com.ecommerce.api.entity.Pedido;
 import com.ecommerce.api.entity.Produto;
 import com.ecommerce.api.entity.Usuario;
 import com.ecommerce.api.enums.StatusPedido;
-import com.ecommerce.api.exception.ExcecaoNegocio;
 import com.ecommerce.api.exception.ExcecaoEstoqueInsuficiente;
+import com.ecommerce.api.exception.ExcecaoNegocio;
 import com.ecommerce.api.exception.ExcecaoRecursoNaoEncontrado;
 import com.ecommerce.api.repository.PedidoRepositorio;
 import com.ecommerce.api.repository.ProdutoRepositorio;
@@ -71,8 +74,8 @@ public class ServicoPedido {
             // REGRA DE NEGÓCIO: Valida estoque disponível
             if (!produto.temEstoqueSuficiente(itemRequisicao.getQuantidade())) {
                 throw new ExcecaoEstoqueInsuficiente(
-                        String.format("Estoque insuficiente para o produto '%s'. " +
-                                "Disponível: %d, Solicitado: %d",
+                        String.format("Estoque insuficiente para o produto '%s'. "
+                                + "Disponível: %d, Solicitado: %d",
                                 produto.getNome(),
                                 produto.getQuantidadeEstoque(),
                                 itemRequisicao.getQuantidade())
@@ -144,8 +147,8 @@ public class ServicoPedido {
                     pedidoRepositorio.save(pedido);
                     
                     throw new ExcecaoEstoqueInsuficiente(
-                            String.format("Pedido cancelado: Estoque insuficiente para o produto '%s'. " +
-                                    "Disponível: %d, Necessário: %d",
+                            String.format("Pedido cancelado: Estoque insuficiente para o produto '%s'. "
+                                    + "Disponível: %d, Necessário: %d",
                                     produto.getNome(),
                                     produto.getQuantidadeEstoque(),
                                     item.getQuantidade())

@@ -5,8 +5,8 @@
 ### Testes Unitários
 ```bash
 # Executar testes unitários
-mvn test
-
+mvn clean test
+P
 # Com relatório de cobertura
 mvn test jacoco:report
 
