@@ -30,6 +30,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 )
 public class AplicacaoEcommerceApi {
 
+    // ✅ Adicionar para classes utilitárias (se aplicável)
+    private AplicacaoEcommerceApi() {
+        throw new UnsupportedOperationException("Utility class");
+    }
+
     public static void main(String[] args) {
         SpringApplication.run(AplicacaoEcommerceApi.class, args);
     }
