@@ -6,7 +6,7 @@
 ```bash
 # Executar testes unitários
 mvn clean test
-P
+
 # Com relatório de cobertura
 mvn test jacoco:report
 
